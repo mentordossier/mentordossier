@@ -1921,11 +1921,10 @@ function renderDashboard(main){
             </div>
             ${metAllergie.sort((a,b)=>(a.naam||'').localeCompare(b.naam||'','nl')).map(l=>`
               <div>
-                <div class="dash-leerling-rij" style="display:flex; align-items:center; gap:8px;">
-                  <input type="checkbox" class="dash-bespreken-cb" data-id="${escapeAttr(l.id)}" ${(data.students[l.id]||{}).teBespreken?'checked':''} title="Markeer als te bespreken">
-                  <span class="dash-naam dash-naam-uitklap" data-id="${escapeAttr(l.id)}" style="cursor:pointer; font-weight:700;">${escapeHtml(l.naam||'')}</span>
-                  <span class="dash-meta">${escapeHtml(l.klas||'')}</span>
-                  <span style="font-size:11px; color:#C2160C;">▼</span>
+                <div class="dash-leerling-rij dash-uitklap-rij" data-id="${escapeAttr(l.id)}" style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                  <input type="checkbox" class="dash-bespreken-cb" data-id="${escapeAttr(l.id)}" ${(data.students[l.id]||{}).teBespreken?'checked':''} title="Markeer als te bespreken" onclick="event.stopPropagation()">
+                  <span class="dash-naam" style="font-weight:700;">${escapeHtml(l.naam||'')}</span>
+                  <span class="dash-pijl-uitklap" style="font-size:10px; color:#C2160C; margin-left:auto;">▼</span>
                 </div>
                 <div class="dash-uitklap" data-id="${escapeAttr(l.id)}" style="display:none; margin:6px 0 10px 24px; padding:8px 12px; background:#FFF5F5; border-left:3px solid #C2160C; border-radius:4px; font-size:13px;">
                   ${(data.students[l.id]&&data.students[l.id].allergieën||[]).map(a=>`
@@ -1944,10 +1943,9 @@ function renderDashboard(main){
             </div>
             ${metMedisch.sort((a,b)=>(a.naam||'').localeCompare(b.naam||'','nl')).map(l=>`
               <div>
-                <div class="dash-leerling-rij" style="display:flex; align-items:center; gap:8px;">
-                  <span class="dash-naam dash-naam-uitklap" data-id="${escapeAttr(l.id)}" style="cursor:pointer; font-weight:700;">${escapeHtml(l.naam||'')}</span>
-                  <span class="dash-meta">${escapeHtml(l.klas||'')}</span>
-                  <span style="font-size:11px; color:#3F6B52;">▼</span>
+                <div class="dash-leerling-rij dash-uitklap-rij" data-id="${escapeAttr(l.id)}" style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                  <span class="dash-naam" style="font-weight:700;">${escapeHtml(l.naam||'')}</span>
+                  <span class="dash-pijl-uitklap" style="font-size:10px; color:#3F6B52; margin-left:auto;">▼</span>
                 </div>
                 <div class="dash-uitklap" data-id="${escapeAttr(l.id)}" style="display:none; margin:6px 0 10px 8px; padding:8px 12px; background:#E8F4EE; border-left:3px solid #3F6B52; border-radius:4px; font-size:13px;">
                   ${(data.students[l.id]&&data.students[l.id].medisch||[]).map(m=>`
@@ -2034,7 +2032,6 @@ function renderDashboard(main){
             return metMedicatie.map(l=>`
                   <div class="dash-leerling-rij" data-id="${escapeAttr(l.id)}">
                     <span class="dash-naam">${escapeHtml(l.naam||'')}</span>
-                    <span class="dash-meta">${escapeHtml(l.klas||'')}</span>
                   </div>`).join('');
           })()}
           </div>
@@ -2081,7 +2078,6 @@ function renderDashboard(main){
               ${eersteNog.map(l=>`
                 <div class="dash-leerling-rij" data-id="${escapeAttr(l.id)}">
                   <span class="dash-naam">${escapeHtml(l.naam||'')}</span>
-                  <span class="dash-meta">${escapeHtml(l.klas||'')}</span>
                 </div>`).join('')}
             </div>`;
           }
@@ -2095,7 +2091,6 @@ function renderDashboard(main){
                 ${tweedeNog.map(l=>`
                   <div class="dash-leerling-rij" data-id="${escapeAttr(l.id)}">
                     <span class="dash-naam">${escapeHtml(l.naam||'')}</span>
-                    <span class="dash-meta">${escapeHtml(l.klas||'')}</span>
                   </div>`).join('')}
               </div>
             </div>`;
@@ -2110,12 +2105,10 @@ function renderDashboard(main){
                 ${derdeNog.map(l=>`
                   <div class="dash-leerling-rij" data-id="${escapeAttr(l.id)}">
                     <span class="dash-naam">${escapeHtml(l.naam||'')}</span>
-                    <span class="dash-meta">${escapeHtml(l.klas||'')}</span>
                   </div>`).join('')}
                 ${derdeKlaar.map(l=>`
                   <div class="dash-leerling-rij" data-id="${escapeAttr(l.id)}" style="text-decoration:line-through; opacity:0.5;">
                     <span class="dash-naam">${escapeHtml(l.naam||'')}</span>
-                    <span class="dash-meta">${escapeHtml(l.klas||'')}</span>
                   </div>`).join('')}
               </div>
             </div>`;
@@ -2123,9 +2116,7 @@ function renderDashboard(main){
           return html;
         })()}
 
-        <div class="dash-kaart" style="grid-column:1/-1;">
-          <div class="dash-kaart-kop" style="display:flex; align-items:center; gap:10px;">⚠️ Ontbrekende gegevens <button id="printOntbrekendeBtn" onclick="printOntbrekendeGegevens()" style="margin-left:auto; font-size:11px; padding:3px 10px; border:1px solid var(--rand); border-radius:4px; background:var(--kaart); cursor:pointer;">🖨️ Afdrukken</button></div>
-          ${(()=>{
+        ${(()=>{
             const velden = [
               { sleutel: 'geboortedatum', label: 'geboortedatum', check: l => !!l.geboortedatum },
               { sleutel: 'geslacht', label: 'geslacht', check: l => !!l.geslacht },
@@ -2145,17 +2136,26 @@ function renderDashboard(main){
               const nvt = l.nvt || {};
               return velden.some(v => !v.check(l) && !nvt[v.sleutel]);
             }).sort((a,b)=>(a.naam||'').localeCompare(b.naam||'','nl'));
-            if(onvolledig.length===0) return '<div class="dash-leeg" style="color:var(--groen);font-style:normal;font-weight:700;">✓ Alles ingevuld!</div>';
-            return onvolledig.map(l=>{
-              const nvt = l.nvt || {};
-              const mist = velden.filter(v=>!v.check(l)&&!nvt[v.sleutel]).map(v=>v.label).join(', ');
-              return `<div class="dash-leerling-rij" data-id="${escapeAttr(l.id)}" style="flex-wrap:wrap; cursor:pointer;">
-                <span class="dash-naam" data-id="${escapeAttr(l.id)}">${escapeHtml(l.naam||'')}</span>
-                <span class="dash-meta" style="flex:1;">${escapeHtml(mist)}</span>
-              </div>`;
-            }).join('');
+            const teller = onvolledig.length > 0 ? ` <span style="font-size:12px; font-weight:400; color:var(--inkt-zacht);">(${onvolledig.length})</span>` : '';
+            const inhoud = onvolledig.length===0
+              ? '<div class="dash-leeg" style="color:var(--groen);font-style:normal;font-weight:700;">✓ Alles ingevuld!</div>'
+              : onvolledig.map(l=>{
+                  const nvt = l.nvt || {};
+                  const mist = velden.filter(v=>!v.check(l)&&!nvt[v.sleutel]).map(v=>v.label).join(', ');
+                  return `<div class="dash-leerling-rij" data-id="${escapeAttr(l.id)}" style="flex-wrap:wrap; cursor:pointer;">
+                    <span class="dash-naam" data-id="${escapeAttr(l.id)}">${escapeHtml(l.naam||'')}</span>
+                    <span class="dash-meta" style="flex:1;">${escapeHtml(mist)}</span>
+                  </div>`;
+                }).join('');
+            return `<div class="dash-kaart" style="grid-column:1/-1;">
+              <div class="dash-kaart-kop" style="display:flex; align-items:center; gap:6px; cursor:pointer;" onclick="(function(btn){var inhoud=btn.parentElement.querySelector('.dash-ontbrekende-inhoud');var open=inhoud.style.display!=='none';inhoud.style.display=open?'none':'';btn.querySelector('.dash-pijl').textContent=open?'▼':'▲';})(this)">
+                <span>⚠️ Ontbrekende gegevens${teller}</span>
+                <span class="dash-pijl" style="font-size:10px; color:var(--inkt-zacht); margin-left:4px;">▲</span>
+                <button onclick="event.stopPropagation(); printOntbrekendeGegevens()" style="margin-left:auto; font-size:11px; padding:3px 10px; border:1px solid var(--rand); border-radius:4px; background:var(--kaart); cursor:pointer;">🖨️ Afdrukken</button>
+              </div>
+              <div class="dash-ontbrekende-inhoud">${inhoud}</div>
+            </div>`;
           })()}
-        </div>
 
       </div>
     </div>
@@ -2558,13 +2558,18 @@ function renderMain(){
       });
     }
 
-    // Uitklap handlers voor allergie en medisch namen
-    els('.dash-naam-uitklap', main).forEach(span=>{
-      span.addEventListener('click', (e)=>{
+    // Uitklap handlers voor allergie en medisch rijen
+    els('.dash-uitklap-rij', main).forEach(rij=>{
+      rij.addEventListener('click', (e)=>{
         e.stopPropagation();
-        const id = span.dataset.id;
+        const id = rij.dataset.id;
         const uitklap = main.querySelector(`.dash-uitklap[data-id="${id}"]`);
-        if(uitklap) uitklap.style.display = uitklap.style.display==='none' ? '' : 'none';
+        const pijl = rij.querySelector('.dash-pijl-uitklap');
+        if(uitklap){
+          const open = uitklap.style.display !== 'none';
+          uitklap.style.display = open ? 'none' : '';
+          if(pijl) pijl.textContent = open ? '▼' : '▲';
+        }
       });
     });
 
