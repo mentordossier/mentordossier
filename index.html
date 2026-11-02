@@ -2024,25 +2024,24 @@ function renderDashboard(main){
         </div>
 
         <div class="dash-kaart dash-kaart-herinneringen">
-          <div class="dash-kaart-kop">💊 Medicatie</div>
+          <div class="dash-kaart-kop" style="cursor:pointer; display:flex; align-items:center; justify-content:space-between;" onclick="(function(btn){var inhoud=document.getElementById('dashMedicatieInhoud');var open=inhoud.style.display!=='none';inhoud.style.display=open?'none':'';btn.querySelector('.dash-pijl').textContent=open?'▼':'▲';})(this)">
+            <span>💊 Medicatie</span><span class="dash-pijl" style="font-size:10px; color:var(--inkt-zacht);">▼</span>
+          </div>
+          <div id="dashMedicatieInhoud" style="display:none;">
           ${(()=>{
             const metMedicatie = leerlingen.filter(l=>l.medicatie && l.medicatie.length>0).sort((a,b)=>(a.naam||'').localeCompare(b.naam||'','nl'));
             if(metMedicatie.length===0) return '<div class="dash-leeg">Geen leerlingen met medicatie.</div>';
-            return `<div class="dash-herinneringen-verborgen">
-              <button class="dash-onthul-btn" id="dashMedicatieBtn">Toon ${metMedicatie.length} leerling${metMedicatie.length!==1?'en':''}</button>
-              <div class="dash-herinneringen-inhoud" id="dashMedicatieInhoud" style="display:none;">
-                ${metMedicatie.map(l=>`
+            return metMedicatie.map(l=>`
                   <div class="dash-leerling-rij" data-id="${escapeAttr(l.id)}">
                     <span class="dash-naam">${escapeHtml(l.naam||'')}</span>
                     <span class="dash-meta">${escapeHtml(l.klas||'')}</span>
-                  </div>`).join('')}
-              </div>
-            </div>`;
+                  </div>`).join('');
           })()}
+          </div>
         </div>
 
         <div class="dash-kaart dash-kaart-herinneringen">
-          <div class="dash-kaart-kop">📌 Herinneringen</div>
+          <div class="dash-kaart-kop" style="display:flex; align-items:center; gap:10px;">📌 Herinneringen <button onclick="printHerinneringen()" style="margin-left:auto; font-size:11px; padding:3px 10px; border:1px solid var(--rand); border-radius:4px; background:var(--kaart); cursor:pointer;">🖨️ Afdrukken</button></div>
           ${(()=>{
             const herinneringen = [];
             Object.values(data.students||{}).forEach(leerling=>{
@@ -2089,28 +2088,36 @@ function renderDashboard(main){
           // Tweede mentorgesprek kolom — alleen tonen als er iemand het eerste heeft afgerond
           if(heeftEerste && (tweedeNog.length > 0 || derdeKlaar.length > 0)){
             html += `<div class="dash-kaart">
-              <div class="dash-kaart-kop">💬 Tweede mentorgesprek</div>
-              ${tweedeNog.map(l=>`
-                <div class="dash-leerling-rij" data-id="${escapeAttr(l.id)}">
-                  <span class="dash-naam">${escapeHtml(l.naam||'')}</span>
-                  <span class="dash-meta">${escapeHtml(l.klas||'')}</span>
-                </div>`).join('')}
+              <div class="dash-kaart-kop" style="cursor:pointer; display:flex; align-items:center; justify-content:space-between;" onclick="(function(btn){var inhoud=btn.parentElement.querySelector('.dash-inklapbaar');var open=inhoud.style.display!=='none';inhoud.style.display=open?'none':'';btn.querySelector('.dash-pijl').textContent=open?'▼':'▲';})(this)">
+                <span>💬 Tweede mentorgesprek</span><span class="dash-pijl" style="font-size:10px; color:var(--inkt-zacht);">▲</span>
+              </div>
+              <div class="dash-inklapbaar">
+                ${tweedeNog.map(l=>`
+                  <div class="dash-leerling-rij" data-id="${escapeAttr(l.id)}">
+                    <span class="dash-naam">${escapeHtml(l.naam||'')}</span>
+                    <span class="dash-meta">${escapeHtml(l.klas||'')}</span>
+                  </div>`).join('')}
+              </div>
             </div>`;
           }
           // Derde mentorgesprek kolom — alleen tonen als er iemand het tweede heeft afgerond
           if(heeftTweede && (derdeNog.length > 0 || derdeKlaar.length > 0)){
             html += `<div class="dash-kaart">
-              <div class="dash-kaart-kop">💬 Derde mentorgesprek</div>
-              ${derdeNog.map(l=>`
-                <div class="dash-leerling-rij" data-id="${escapeAttr(l.id)}">
-                  <span class="dash-naam">${escapeHtml(l.naam||'')}</span>
-                  <span class="dash-meta">${escapeHtml(l.klas||'')}</span>
-                </div>`).join('')}
-              ${derdeKlaar.map(l=>`
-                <div class="dash-leerling-rij" data-id="${escapeAttr(l.id)}" style="text-decoration:line-through; opacity:0.5;">
-                  <span class="dash-naam">${escapeHtml(l.naam||'')}</span>
-                  <span class="dash-meta">${escapeHtml(l.klas||'')}</span>
-                </div>`).join('')}
+              <div class="dash-kaart-kop" style="cursor:pointer; display:flex; align-items:center; justify-content:space-between;" onclick="(function(btn){var inhoud=btn.parentElement.querySelector('.dash-inklapbaar');var open=inhoud.style.display!=='none';inhoud.style.display=open?'none':'';btn.querySelector('.dash-pijl').textContent=open?'▼':'▲';})(this)">
+                <span>💬 Derde mentorgesprek</span><span class="dash-pijl" style="font-size:10px; color:var(--inkt-zacht);">▲</span>
+              </div>
+              <div class="dash-inklapbaar">
+                ${derdeNog.map(l=>`
+                  <div class="dash-leerling-rij" data-id="${escapeAttr(l.id)}">
+                    <span class="dash-naam">${escapeHtml(l.naam||'')}</span>
+                    <span class="dash-meta">${escapeHtml(l.klas||'')}</span>
+                  </div>`).join('')}
+                ${derdeKlaar.map(l=>`
+                  <div class="dash-leerling-rij" data-id="${escapeAttr(l.id)}" style="text-decoration:line-through; opacity:0.5;">
+                    <span class="dash-naam">${escapeHtml(l.naam||'')}</span>
+                    <span class="dash-meta">${escapeHtml(l.klas||'')}</span>
+                  </div>`).join('')}
+              </div>
             </div>`;
           }
           return html;
@@ -2220,17 +2227,6 @@ function renderDashboard(main){
       els('.dash-leerling-rij[data-id]', resultDiv).forEach(rij=>{
         rij.addEventListener('click', ()=> selectStudent(rij.dataset.id));
       });
-    });
-  }
-  const medicatieBtn = el('#dashMedicatieBtn');
-  if(medicatieBtn){
-    medicatieBtn.addEventListener('click', ()=>{
-      const inhoud = el('#dashMedicatieInhoud');
-      const zichtbaar = inhoud.style.display !== 'none';
-      inhoud.style.display = zichtbaar ? 'none' : '';
-      medicatieBtn.textContent = zichtbaar
-        ? medicatieBtn.textContent.replace('Verberg','Toon')
-        : medicatieBtn.textContent.replace('Toon','Verberg');
     });
   }
   const onthulBtn = el('#dashOnthulBtn');
@@ -4282,6 +4278,50 @@ function renderAchtergrondOverzicht(){
       </div>`;
     })()}
   `;
+}
+
+function printHerinneringen(){
+  const klas = data.mentorklas || '';
+  const herinneringen = [];
+  Object.values(data.students||{}).sort((a,b)=>(a.naam||'').localeCompare(b.naam||'','nl')).forEach(leerling=>{
+    (leerling.actiepunten||[]).filter(a=>a.dashboardHerinnering && !a.done).forEach(a=>{
+      herinneringen.push({leerling, actie:a});
+    });
+  });
+  const html = `
+    <div style="font-family:Arial,sans-serif; font-size:11pt; color:#222; max-width:800px; margin:0 auto; padding:20px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; border-bottom:2px solid #3F6B52; padding-bottom:8px; margin-bottom:16px;">
+        <div>
+          <div style="font-size:16pt; font-weight:800; color:#3F6B52;">📌 Herinneringen</div>
+          <div style="font-size:10pt; color:#666;">Mentordossier · ${new Date().toLocaleDateString('nl-NL',{day:'numeric',month:'long',year:'numeric'})}</div>
+        </div>
+        ${klas ? `<div style="font-size:11pt; font-weight:600; color:#3F6B52;">${escapeHtml(klas)}</div>` : ''}
+      </div>
+      ${herinneringen.length===0
+        ? '<div style="color:#3F6B52; font-weight:700; font-size:13pt;">✓ Geen openstaande herinneringen!</div>'
+        : `<table style="width:100%; border-collapse:collapse; font-size:10.5pt;">
+            <thead>
+              <tr style="background:#3F6B52; color:#fff;">
+                <th style="padding:6px 10px; text-align:left; font-weight:700;">Leerling</th>
+                <th style="padding:6px 10px; text-align:left; font-weight:700;">Klas</th>
+                <th style="padding:6px 10px; text-align:left; font-weight:700;">Herinnering</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${herinneringen.map((h,i)=>{
+                const omschrijving = [h.actie.kernwoord, h.actie.toelichting].filter(Boolean).join(' · ');
+                return `<tr style="background:${i%2===0?'#fff':'#f7f7f7'}; border-bottom:1px solid #ddd;">
+                  <td style="padding:6px 10px; font-weight:600;">${escapeHtml(h.leerling.naam||'')}</td>
+                  <td style="padding:6px 10px; color:#666;">${escapeHtml(h.leerling.klas||'')}</td>
+                  <td style="padding:6px 10px; color:#B8762B;">${escapeHtml(omschrijving)}</td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>`
+      }
+      <div style="margin-top:20px; text-align:center; font-size:9pt; color:#aaa; border-top:1px solid #ddd; padding-top:8px;">Mentordossier — vertrouwelijk document</div>
+    </div>`;
+  afdrukVenster(html, 'Herinneringen');
 }
 
 function printOntbrekendeGegevens(){
