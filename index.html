@@ -2133,8 +2133,6 @@ function renderDashboard(main){
               { sleutel: 'huisdier', label: 'huisdieren', check: l => !!(l.huisdierenNieuw && l.huisdierenNieuw.length > 0) },
               { sleutel: 'allergie', label: 'allergie nagaan', check: l => l.heeftAllergie === true || (l.nvt||{}).allergie },
               { sleutel: 'medisch', label: 'medisch nagaan', check: l => l.heeftMedisch === true || (l.nvt||{}).medisch },
-              { sleutel: 'tweedeMentorgesprek', label: '2e mentorgesprek', check: l => l.tweedeGesprekAfgerond || l.tweedeNietNodig || !l.eersteGesprekAfgerond },
-              { sleutel: 'derdeMentorgesprek', label: '3e mentorgesprek', check: l => l.derdeGesprekAfgerond || l.derdeNietNodig || !l.tweedeGesprekAfgerond },
             ];
             const onvolledig = leerlingen.filter(l=>{
               const nvt = l.nvt || {};
@@ -4301,8 +4299,6 @@ function printOntbrekendeGegevens(){
     { sleutel: 'huisdier', label: 'huisdieren', check: l => !!(l.huisdierenNieuw && l.huisdierenNieuw.length > 0) },
     { sleutel: 'allergie', label: 'allergie nagaan', check: l => l.heeftAllergie === true || (l.nvt||{}).allergie },
     { sleutel: 'medisch', label: 'medisch nagaan', check: l => l.heeftMedisch === true || (l.nvt||{}).medisch },
-    { sleutel: 'tweedeMentorgesprek', label: '2e mentorgesprek', check: l => l.tweedeGesprekAfgerond || l.tweedeNietNodig || !l.eersteGesprekAfgerond },
-    { sleutel: 'derdeMentorgesprek', label: '3e mentorgesprek', check: l => l.derdeGesprekAfgerond || l.derdeNietNodig || !l.tweedeGesprekAfgerond },
   ];
   const onvolledig = leerlingen.filter(l=>{
     const nvt = l.nvt || {};
